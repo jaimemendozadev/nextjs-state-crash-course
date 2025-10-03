@@ -8,6 +8,9 @@
 - [Prop Drilling](#prop-drilling)
 - [What is State Management?](#what-is-state-management)
 - [React Context](#react-context)
+- [1) Create the Context](#1-create-the-context)
+- [2) Use the `React.Provider` as a WrapperComponent](#2-use-the-reactprovider-as-a-wrappercomponent)
+- [3) The `children` prop and Using the StateProvider](#3-the-children-prop-and-using-the-stateprovider)
 
 
 
@@ -197,9 +200,11 @@ The Context API gives us the ability to track all the `State`/data we care about
 <br />
 
 
+[Back to TOC](#table-of-contents-toc)
 
+___
 
-<p style="font-size: 20px">1) Create the Context</p>
+## 1) Create the Context
 
 Step 1 involves the use of a brand new React API Function called [`createContext`](https://react.dev/reference/react/createContext). It's self explanatory, but essentially when you pass an argument to this function, you're doing 2 things:
 
@@ -213,7 +218,7 @@ If we go back to our Frontend Database concept, you can think of `createContext`
 
 When you invoke `createContext` for the first time, `IT'S IMPORTANT THAT YOU EXPLICITLY DEFINE THE SHAPE OF YOUR DATA` that you'll be tracking in your app.
 
-The shape of the data becomes very important when you create your custom `React.Provider` component to start the actual Frontend Database.
+The shape of the data becomes very important when you create your custom `React.Provider` component in the [next section](#2-use-the-reactprovider-as-a-wrappercomponent) to start the actual Frontend Database.
 
 
 ```
@@ -231,7 +236,11 @@ export const AppContext = createContext({
 <br />
 <br />
 
-<p style="font-size: 20px">2) Use the `React.Provider` Component to Wrap the `<App />` </p>
+[Back to TOC](#table-of-contents-toc)
+
+___
+
+## 2) Use the `React.Provider` as a WrapperComponent
 
 Essentially, we're now creating a custom Component that we'll just call `StateProvider`. 
 
@@ -247,7 +256,7 @@ import { createContext, useState } from 'react';
 // <AppContext /> code here
 
 
-const StateProvider = ({children}) => {
+export const StateProvider = ({children}) => {
 
     const [user, setUser] = useState({});
 
@@ -266,16 +275,117 @@ const StateProvider = ({children}) => {
 
 ```
 
+<br />
+<br />
+
+Inside the `return` state of the `StateProvider` Component, we're using the `AppContext` component we [created earlier](#1-create-the-context) with the `createContext` function. But notice the `.Provider` method we access in the `AppContext`. 
+
+```
+
+return (
+        <AppContext.Provider value={{user, todos, setUser, setTodos}}>
+          {children}
+        </AppContext.Provider>
+    )
+
+```
+
+
+
+That's the `.Provider` Component React gives us, and by invoking it inside the `return` statement, we're essentially starting the Frontend database connection inside our app.
+
+<br />
+<br />
+
+Also, notice the `value` prop that's attached to the `<AppContext.Provider>` component:
+
+```
+
+<AppContext.Provider value={{user, todos, setUser, setTodos}}>
+
+```
+
+When we start the Frontend database connection, the object that gets passed to the `value` prop `MUST MATCH THE SHAPE OF THE DATA` you defined when you ran the `createContext` function for the first time.
+
 
 <br />
 
 
+So we defined the shape of the `State` data in our config, we started the Frontend Database connection by invoking `.Provider` component in the `return` statement. But how do we connect the Frontend Databse to our entire React app?
 
 
+<br />
+
+[Back to TOC](#table-of-contents-toc)
+
+___
+
+## 3) The `children` prop and Using the StateProvider
 
 
+Let's take a look at the `StateProvider` component we just wrote. Notice the `children` prop and how we're rendering it in the `return` statement?
+
+```
+
+export const StateProvider = ({children}) => {
+
+    const [user, setUser] = useState({});
+
+    const [todos, setTodos] = useState([]);
 
 
+    // More custom state/functions (if any)
+
+
+    return (
+        <AppContext.Provider value={{user, todos, setUser, setTodos}}>
+          {children}
+        </AppContext.Provider>
+    )
+}
+```
+
+
+Without going into the details, the `children` prop represents everything that `React` could possibly render on the screen, `INCLUDING` other React Components.
+
+
+So essentially, when we start the Frontend database connection by `returning` the `<AppContext.Provider>`, when we actually render our custom `<StateProvider />` Component, we're establishing the connection between our Frontend Database and the rest of the app like so:
+
+<br />
+
+```
+import {StateProvider} from './somewhere';
+
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <StateProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          {children}
+        </body>
+      </html>
+    </StateProvider>
+  );
+}
+
+```
+<br />
+
+What you're looking at in the code snippet above 👆🏽 is the inside our `/app/layout.tsx` file. 
+
+
+This file represents `THE ENTIRE LAYOUT` that is available to our app, every single `/page` folder route, and all the React components rendered in those `/page` folder routes. 
+
+But this file also uses the `children` prop, and that `children` prop happens to represent all the available React Components that are available in our app.
+
+By wrapping the `<html>`, the `<body>` and rendering the `children` prop with our `<StateProvider>` component we created, we've essentialy connected our new Frontend Database to the rest of our app.
 
 <br />
 
