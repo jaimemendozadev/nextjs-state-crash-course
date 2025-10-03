@@ -7,14 +7,13 @@
 - [Prerequisites](#prerequisites)
 - [Prop Drilling](#prop-drilling)
 - [What is State Management?](#what-is-state-management)
+- [React Context](#react-context)
 
 
 
 <br />
 
 ---
-
-
 ## Prerequisites
 
 I'm going to assume you have access to the following, have working knowledge, or can figure out how to install AND use the following tools on your local machine:
@@ -42,7 +41,7 @@ I also assume you've attended my [Next.js Crash Course](https://github.com/jaime
 ---
 # Prop Drilling
 
-As you've probably already discovered, one of the nice things about [React.js](https://react.dev/) is that you create reusable pieces of UI, that we call Components. Right here, I'm creating a `CustomForm` component:
+As you've probably already discovered, one of the nice things about [React.js](https://react.dev/) is that you can create reusable pieces of UI, that we call Components. Right here, I'm creating a `CustomForm` Component:
 
 ```
 const CustomForm = ({value, handler, submitHandler}) => {
@@ -61,12 +60,12 @@ const CustomForm = ({value, handler, submitHandler}) => {
 <br />
 
 
-When I render this `CustomForm` component to the screen, I'm rendering it inside my `MyTodoApp` component, which is what we call the top `"Parent"` level of the app. 
+When I render this `CustomForm` Component to the screen, I'm rendering it inside my `MyTodoApp` Component, which is what we call the top `"Parent"` level of the app. 
 
 
 From the "Parent" level, I'm passing the `<CustomForm />` Component some [props](https://react.dev/learn/passing-props-to-a-component) so it can receive additional data that it needs to do it's job. 
 
-You can think of `props` as Function arguments, variables, or the data in your app that you care about.
+You can think of `props` as Function arguments, variables, or the data in your app that you care about tracking.
 
 
 ```
@@ -97,7 +96,7 @@ const MyTodoApp = () => {
 Passing props that are created and tracked in a top level `"Parent"` Component that then get passed down to a `"Child"` Component is easy to visualize because the data is only traveling down one-level deep.
 
 
-BUUUUUUUT 
+BUUUUUUUUUUUUUUUUUUUUUUUT 
 
 <br />
 
@@ -135,11 +134,67 @@ By no means is this an official Merriam-Webster's definition of `State`, so take
 
 When we talk about `State` we're talking about the variables, the pieces of data, you care about tracking for the entire duration of your running app.
 
+In the [previous section](#prop-drilling), we were talking about props, and we defined them as follows:
+
+> You can think of `props` as Function arguments, variables, or the data in your app that you care about tracking.
+
+
+<br />
+
+`State` is synonymous with `props` because: 
+
+
+> it's all about the data 🫵🏽 you care about ALWAYS TRACKING or ALWAYS HAVING ACCESS TO while your app is running.
+
+<br />
+
+When we drill props N-levels deep in the app, we risk understanding the data path of the props/data as it travels down to its destination. We might even forget where the data journey started. 😵‍💫 
+
+<br />
+
+
+BUUUUUUUUUUUUUUUUUUUUUUUT 
+
+<br />
+
+🤔 WHAT IF you 🫵🏽 had CONSTANT ACCESS to the props/data you care about tracking? 😮 Enter the idea of `State Management`. 
+
+
+<img src="./README/global-state-screenshot.png" alt="Global State Screenshot" />
+
+<br />
+
+
+
+In the 👆🏽above screenshot, rather than localizing all the important data in one single Component, you could design a little mini Database (DB) that exists somewhere above all the React Components that you render on the screen. This little mini Database WILL ALWAYS KEEP TRACK of whatever data you care about tracking.
+
+
+And the best part: EVERY COMPONENT IN YOUR APP, can have access to the `State` because it exists in the Global space of your app. 
+
+
+Your job as a developer is to then:
+
+- Decide what data you care about tracking;
+- Setting up the `State` database and hooking up the React App to the `State` DB; and
+- Eventually updating the Frontend `State` Database to reflect the most current information after you make a Backend API Operation.
+
+
+We will be using the built-in React tooling to solve our `State` Management issues. Enter React Context.
+
+
+<br />
+
+[Back to TOC](#table-of-contents-toc)
+
+___
+## React Context
 
 
 
 
- 
+
+
+
 <br />
 
 [Back to TOC](#table-of-contents-toc)
