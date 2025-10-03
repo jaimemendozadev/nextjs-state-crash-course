@@ -179,7 +179,7 @@ Your job as a developer is to then:
 - Eventually updating the Frontend `State` Database to reflect the most current information after you make a Backend API Operation.
 
 
-We will be using the built-in React tooling to solve our `State` Management issues. Enter React Context.
+We will be using the built-in React tooling to solve our `State` Management issues. Enter [React Context](https://react.dev/learn/passing-data-deeply-with-context).
 
 
 <br />
@@ -188,6 +188,88 @@ We will be using the built-in React tooling to solve our `State` Management issu
 
 ___
 ## React Context
+
+I didn't invent this truism, but ["Context changes everything"](https://www.bloombergmedia.com/press/bloomberg-media-launches-new-brand-campaign-context-changes-everything/) for our React app. 
+
+The Context API gives us the ability to track all the `State`/data we care about and gives every part of our app access to the `State`.
+
+
+<br />
+
+
+
+
+<p style="font-size: 20px">1) Create the Context</p>
+
+Step 1 involves the use of a brand new React API Function called [`createContext`](https://react.dev/reference/react/createContext). It's self explanatory, but essentially when you pass an argument to this function, you're doing 2 things:
+
+- You're telling React what is the `Shape` of the `State` data you're going to be tracking.
+- The result of calling `createContext` is that you get a brand spanking ✨ new `React.Provider` Component.
+
+<br />
+
+If we go back to our Frontend Database concept, you can think of `createContext` as the function that provides the Database configuration that's used to start the Database connection.
+
+
+When you invoke `createContext` for the first time, `IT'S IMPORTANT THAT YOU EXPLICITLY DEFINE THE SHAPE OF YOUR DATA` that you'll be tracking in your app.
+
+The shape of the data becomes very important when you create your custom `React.Provider` component to start the actual Frontend Database.
+
+
+```
+import { createContext, useState } from 'react';
+
+export const AppContext = createContext({
+  user: {},
+  todos: [],
+  setUser: () => null,
+  setTodos: () => null,
+});
+
+```
+
+<br />
+<br />
+
+<p style="font-size: 20px">2) Use the `React.Provider` Component to Wrap the `<App />` </p>
+
+Essentially, we're now creating a custom Component that we'll just call `StateProvider`. 
+
+Notice below that before we return any `JSX`, we can define a whole lot of React functionality in the form of `useState` variables and updater functions, or even custom functions that do whatever we want. 
+
+<br />
+
+
+```
+import { createContext, useState } from 'react';
+
+
+// <AppContext /> code here
+
+
+const StateProvider = ({children}) => {
+
+    const [user, setUser] = useState({});
+
+    const [todos, setTodos] = useState([]);
+
+
+    // More custom state/functions (if any)
+
+
+    return (
+        <AppContext.Provider value={{user, todos, setUser, setTodos}}>
+          {children}
+        </AppContext.Provider>
+    )
+}
+
+```
+
+
+<br />
+
+
 
 
 
