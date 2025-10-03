@@ -1,4 +1,5 @@
 // @ts-nocheck
+'use client';
 
 import { createContext, useState } from 'react';
 
@@ -19,7 +20,7 @@ export const DBWrapper = ({children}) => {
 
 
     return (
-        <DBContext.Provider value={{user, userHandler}}>
+        <DBContext.Provider value={{user: currentUser, userHandler}}>
             {children}
         </DBContext.Provider>
     )
